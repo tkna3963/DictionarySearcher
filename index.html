@@ -6,19 +6,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>検索</title>
     <script src="scripts.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            width: 100%;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+
+        #KanjiInput {
+            width: 80%;
+            font-size: 35vw;
+            color: #000;
+            background-color: #fff;
+            border: none;
+            border-radius: 0;
+            text-align: center;
+            box-sizing: border-box;
+            transition: font-size 0.1s ease-in-out;
+        }
+
+        #GoogleLink {
+            margin-top: 20px;
+            font-size: 200%;
+            text-decoration: none;
+            color: #1a0dab;
+        }
+    </style>
 </head>
 
 <body>
     <input type="text" id="KanjiInput" placeholder="検索">
-    <a id="GoogleLink" href="google.com" target=”_blank”>Google先生に聞く</a>
+    <a id="GoogleLink" href="https://www.google.com" target="_blank">Google先生に聞く</a>
 
     <script>
-        document.getElementById('KanjiInput').addEventListener('input', function () {
-            const KnajiInput = this.value;
-            document.getElementById("GoogleLink").innerText = KnajiInput + "をGoogle先生に聞く";
-            document.getElementById("GoogleLink").href = "https://www.google.com/search?q=" + KnajiInput;
+        const KanjiInput = document.getElementById('KanjiInput');
+        const GoogleLink = document.getElementById("GoogleLink");
+
+        // フォントサイズを動的に調整する関数
+        function adjustFontSize() {
+            const maxWidth = window.innerWidth * 0.8;  // 最大幅を80%に設定
+            const textLength = KanjiInput.value.length;
+            const minFontSize = 5;  // 最小フォントサイズ
+            const maxFontSize = 35;  // 最大フォントサイズ
+
+            // 入力文字数に応じたフォントサイズを計算
+            let fontSize = maxFontSize - textLength * 4;  // 長さが増えるごとにフォントサイズが小さくなる
+            fontSize = Math.max(fontSize, minFontSize);  // 最小値より小さくならないように
+
+            // 入力フィールドのフォントサイズを設定
+            KanjiInput.style.fontSize = fontSize + "vw";
+            console.log("Font size adjusted to: " + fontSize + "vw");
+        }
+
+        // 入力内容が変更されたときにGoogleリンクを更新
+        KanjiInput.addEventListener('input', function () {
+            const KanjiInputValue = this.value;
+            GoogleLink.innerText = KanjiInputValue ? `「${KanjiInputValue}」についてGoogle先生に聞く` : "Google先生に聞く";
+            GoogleLink.href = "https://www.google.com/search?q=" + encodeURIComponent(KanjiInputValue);
+
+            // フォントサイズを調整
+            adjustFontSize();
         });
+
+        // 初期化
+        adjustFontSize();
     </script>
 </body>
 
