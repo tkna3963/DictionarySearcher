@@ -4,70 +4,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>検索</title>
-    <script src="scripts.js"></script>
-    <style>
-        body {
-            width: 100%;
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            font-family: 'Noto Sans JP', sans-serif;
-        }
-
-        @font-face {
-            font-family: 'IPAMincho';
-            src: url('ipamp.ttf') format('truetype');
-        }
-
-        #KanjiInput {
-            font-family: 'IPAMincho', sans-serif;
-            width: 80%;
-            font-size: 35vw;
-            color: #000;
-            background-color: #fff;
-            border: none;
-            border-radius: 0;
-            text-align: center;
-            box-sizing: border-box;
-        }
-
-        #GoogleLink {
-            margin-top: 20px;
-            font-size: 200%;
-            text-decoration: none;
-            color: #1a0dab;
-        }
-
-        #range {
-            width: 80%;
-            margin-top: 20px;
-        }
-    </style>
+    <title>タブレット辞書検索</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="scripts.js" defer></script>
 </head>
 
 <body>
-    <input type="text" id="KanjiInput" placeholder="検索">
-    <input type="number" id="KanjiNum">
-    <a id="GoogleLink" href="https://www.google.com" target="_blank">Google先生に聞く</a>
+    <main class="tablet-app">
+        <header class="hero">
+            <p class="hero-kicker">School Dictionary</p>
+            <h1>タブレット辞書検索</h1>
+            <p class="hero-sub">日本語と英語をすばやく調べられる、授業向けシンプル検索</p>
+        </header>
 
-    <script>
-        const KanjiInput = document.getElementById('KanjiInput');
-        const GoogleLink = document.getElementById("GoogleLink");
-        const range = document.getElementById('range');
+        <section class="search-card" aria-label="検索エリア">
+            <label class="sr-only" for="KanjiInput">検索キーワード</label>
+            <textarea id="KanjiInput" placeholder="ことばを入力" autocomplete="off" autocapitalize="none" rows="3" spellcheck="false"></textarea>
 
-        function updateLink() {
-            const KanjiInputValue = KanjiInput.value;
-            GoogleLink.innerText = KanjiInputValue ? `「${KanjiInputValue}」についてGoogle先生に聞く` : "Google先生に聞く";
-            GoogleLink.href = "https://www.google.com/search?q=" + encodeURIComponent(KanjiInputValue);
-        }
+            <div class="controls-grid">
+                <div class="control-block">
+                    <label for="KanjiNum">表示件数</label>
+                    <input type="number" id="KanjiNum" min="1" max="10" value="4" aria-label="表示件数">
+                </div>
 
-        updateLink();
-        KanjiInput.addEventListener('input', updateLink);
-    </script>
+                <div id="ActionRow" class="control-block button-block">
+                    <button id="SearchButton" type="button">辞書検索</button>
+                    <button id="ClearButton" type="button">クリア</button>
+                </div>
+            </div>
+
+            <div class="link-row">
+                <a id="JishoLink" href="https://jisho.org" target="_blank" rel="noopener">Jishoで開く</a>
+                <a id="GoogleLink" href="https://www.google.com" target="_blank" rel="noopener">Googleで開く</a>
+            </div>
+        </section>
+
+        <section id="DictionaryPanel" class="result-card" aria-live="polite">
+            <p id="DictionaryStatus">単語を入力すると辞書候補を表示します</p>
+            <ul id="DictionaryResults"></ul>
+        </section>
+    </main>
 </body>
 
 </html>

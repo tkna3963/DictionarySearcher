@@ -1,0 +1,334 @@
+:root {
+    --bg-1: #eef7f4;
+    --bg-2: #dff0ff;
+    --card: #ffffff;
+    --line: #d4dce8;
+    --ink: #1f2a37;
+    --muted: #5f6b7a;
+    --brand: #0b7285;
+    --brand-strong: #0a5563;
+    --accent: #f4a261;
+    --danger: #b00020;
+    --shadow: 0 10px 30px rgba(20, 40, 80, 0.12);
+}
+
+@font-face {
+    font-family: 'IPAMincho';
+    src: url('ipamp.ttf') format('truetype');
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100svh;
+    font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Noto Sans JP', sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at 12% 10%, rgba(255, 201, 138, 0.3), transparent 35%),
+        radial-gradient(circle at 88% 0%, rgba(72, 177, 255, 0.22), transparent 38%),
+        linear-gradient(165deg, var(--bg-1), var(--bg-2));
+    display: flex;
+    justify-content: center;
+    padding: clamp(14px, 2vw, 24px);
+}
+
+.tablet-app {
+    width: min(980px, 100%);
+    display: grid;
+    gap: 14px;
+}
+
+body[data-orientation='portrait'] .tablet-app {
+    width: min(820px, 100%);
+}
+
+body[data-orientation='landscape'] .tablet-app {
+    width: min(1200px, 100%);
+    grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+    grid-template-areas:
+        'hero result'
+        'search result';
+    align-items: stretch;
+    min-height: calc(100svh - clamp(14px, 2vw, 24px) * 2);
+}
+
+.hero,
+.search-card,
+.result-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+}
+
+body[data-orientation='landscape'] .hero {
+    grid-area: hero;
+}
+
+body[data-orientation='landscape'] .search-card {
+    grid-area: search;
+}
+
+body[data-orientation='landscape'] .result-card {
+    grid-area: result;
+    display: flex;
+    flex-direction: column;
+}
+
+.hero {
+    padding: 18px 20px;
+}
+
+.hero-kicker {
+    margin: 0;
+    color: var(--brand);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.94rem;
+}
+
+.hero h1 {
+    margin: 6px 0 4px;
+    font-size: clamp(1.6rem, 3.6vw, 2.2rem);
+}
+
+.hero-sub {
+    margin: 0;
+    color: var(--muted);
+    font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+}
+
+.search-card {
+    padding: clamp(14px, 2vw, 20px);
+    display: grid;
+    gap: 12px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+#KanjiInput {
+    width: 100%;
+    border: 2px solid var(--line);
+    background: #ffffff;
+    border-radius: 16px;
+    font-family: 'IPAMincho', 'Noto Serif JP', serif;
+    font-size: clamp(4.6rem, 18vw, 12rem);
+    text-align: center;
+    color: var(--ink);
+    line-height: 1.05;
+    padding: 18px 14px;
+    min-height: 50svh;
+    max-height: 70svh;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    overflow-y: auto;
+    resize: none;
+}
+
+body[data-orientation='landscape'] #KanjiInput {
+    min-height: 46svh;
+}
+
+#KanjiInput:focus,
+#KanjiNum:focus,
+#SearchButton:focus,
+#ClearButton:focus,
+.link-row a:focus {
+    outline: 3px solid rgba(11, 114, 133, 0.25);
+    outline-offset: 2px;
+}
+
+.controls-grid {
+    display: grid;
+    grid-template-columns: minmax(130px, 180px) 1fr;
+    gap: 10px;
+    align-items: end;
+}
+
+.control-block {
+    display: grid;
+    gap: 6px;
+}
+
+.control-block label {
+    font-size: 1.05rem;
+    color: var(--muted);
+    font-weight: 700;
+}
+
+#KanjiNum {
+    height: 52px;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    font-size: 1.28rem;
+    padding: 0 10px;
+    width: 100%;
+}
+
+#ActionRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+#SearchButton,
+#ClearButton {
+    min-height: 52px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.14rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#SearchButton {
+    background: var(--brand);
+    color: #fff;
+}
+
+#SearchButton:hover {
+    background: var(--brand-strong);
+}
+
+#ClearButton {
+    background: #f1f5f9;
+    color: var(--ink);
+}
+
+#ClearButton:hover {
+    background: #e6ecf3;
+}
+
+.link-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.link-row a {
+    text-decoration: none;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ink);
+    background: #fff;
+}
+
+#GoogleLink {
+    border-color: #bfd4ff;
+    color: #1a4ea1;
+}
+
+#JishoLink {
+    border-color: #f5d2b1;
+    color: #8a4c15;
+}
+
+#DictionaryPanel {
+    padding: clamp(14px, 2vw, 18px);
+}
+
+#DictionaryStatus {
+    margin: 0 0 10px;
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 1.16rem;
+}
+
+#DictionaryStatus.error {
+    color: var(--danger);
+}
+
+#DictionaryResults {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: min(46svh, 520px);
+    overflow: auto;
+    display: grid;
+    gap: 8px;
+}
+
+body[data-orientation='landscape'] #DictionaryResults {
+    max-height: none;
+    flex: 1;
+}
+
+#DictionaryResults li {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #f8fbff;
+    padding: 10px 12px;
+    line-height: 1.45;
+    font-size: 1.08rem;
+}
+
+.result-title {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 3px;
+    font-size: 1.16rem;
+}
+
+.result-meta {
+    display: block;
+    color: var(--muted);
+    font-size: 0.98rem;
+    margin-top: 5px;
+}
+
+@media (max-width: 860px) {
+    .controls-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .link-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (orientation: landscape) and (max-width: 900px) {
+    body[data-orientation='landscape'] .tablet-app {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            'hero'
+            'search'
+            'result';
+        min-height: auto;
+    }
+}
+
+@media (max-width: 560px) {
+    body {
+        padding: 10px;
+    }
+
+    .hero,
+    .search-card,
+    .result-card {
+        border-radius: 16px;
+    }
+
+    #ActionRow {
+        grid-template-columns: 1fr;
+    }
+}
