@@ -32,27 +32,28 @@ body {
         linear-gradient(165deg, var(--bg-1), var(--bg-2));
     display: flex;
     justify-content: center;
-    padding: clamp(14px, 2vw, 24px);
+    padding: 0;
 }
 
 .tablet-app {
-    width: min(980px, 100%);
+    width: 100%;
+    min-height: 100svh;
     display: grid;
-    gap: 14px;
+    gap: 0;
 }
 
 body[data-orientation='portrait'] .tablet-app {
-    width: min(820px, 100%);
+    width: 100%;
 }
 
 body[data-orientation='landscape'] .tablet-app {
-    width: min(1200px, 100%);
-    grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+    width: 100%;
+    grid-template-columns: minmax(320px, 38%) minmax(0, 62%);
     grid-template-areas:
         'hero result'
         'search result';
     align-items: stretch;
-    min-height: calc(100svh - clamp(14px, 2vw, 24px) * 2);
+    min-height: 100svh;
 }
 
 .hero,
@@ -60,8 +61,8 @@ body[data-orientation='landscape'] .tablet-app {
 .result-card {
     background: var(--card);
     border: 1px solid var(--line);
-    border-radius: 20px;
-    box-shadow: var(--shadow);
+    border-radius: 0;
+    box-shadow: none;
 }
 
 body[data-orientation='landscape'] .hero {
@@ -79,7 +80,7 @@ body[data-orientation='landscape'] .result-card {
 }
 
 .hero {
-    padding: 18px 20px;
+    padding: 16px 18px;
 }
 
 .hero-kicker {
@@ -103,7 +104,7 @@ body[data-orientation='landscape'] .result-card {
 }
 
 .search-card {
-    padding: clamp(14px, 2vw, 20px);
+    padding: 14px 16px;
     display: grid;
     gap: 12px;
 }
@@ -244,7 +245,7 @@ body[data-orientation='landscape'] #KanjiInput {
 }
 
 #DictionaryPanel {
-    padding: clamp(14px, 2vw, 18px);
+    padding: 14px 16px;
 }
 
 #DictionaryStatus {
@@ -319,13 +320,13 @@ body[data-orientation='landscape'] #DictionaryResults {
 
 @media (max-width: 560px) {
     body {
-        padding: 10px;
+        padding: 0;
     }
 
     .hero,
     .search-card,
     .result-card {
-        border-radius: 16px;
+        border-radius: 0;
     }
 
     #ActionRow {

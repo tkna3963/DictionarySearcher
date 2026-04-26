@@ -7,7 +7,7 @@ const DictionaryResults = document.getElementById('DictionaryResults');
 const SearchButton = document.getElementById('SearchButton');
 const ClearButton = document.getElementById('ClearButton');
 
-const JAPANESE_WIKTIONARY_API_URL = 'https://ja.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&redirects=1&origin=*&titles=';
+const JAPANESE_WIKIPEDIA_API_URL = 'https://ja.wikipedia.org/w/api.php';
 const ENGLISH_API_URL = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
 
 let debounceTimer = null;
@@ -90,35 +90,35 @@ function renderResults(entries) {
     }
 }
 
-function parseJapaneseWiktionaryEntries(data, limit) {
-    if (!data || !data.query || !data.query.pages) {
+function parseJapaneseWikipediaEntries(searchData, extractData, limit) {
+    if (!searchData || !searchData.query || !Array.isArray(searchData.query.search)) {
         return [];
     }
 
-    const pages = Object.values(data.query.pages);
-    const entries = [];
-
-    for (const page of pages) {
-        if (!page || page.missing || typeof page.extract !== 'string') {
-            continue;
-        }
-
-        const lines = page.extract
-            .split('\n')
-            .map((line) => line.trim())
-            .filter((line) => line && !line.startsWith('='));
-
-        for (const line of lines) {
-            entries.push({
-                title: page.title,
-                description: line,
-                source: '日本語Wiktionary'
-            });
-
-            if (entries.length >= limit) {
-                return entries;
+    const pagesByTitle = {};
+    if (extractData && extractData.query && extractData.query.pages) {
+        for (const page of Object.values(extractData.query.pages)) {
+            if (page && page.title) {
+                pagesByTitle[page.title] = page;
             }
         }
+    }
+
+    const entries = [];
+
+    for (const item of searchData.query.search.slice(0, limit)) {
+        const title = item.title || '';
+        const snippet = (item.snippet || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+        const page = pagesByTitle[title];
+        const extract = page && typeof page.extract === 'string'
+            ? page.extract.split('\n').map((line) => line.trim()).find((line) => line)
+            : '';
+
+        entries.push({
+            title,
+            description: extract || snippet || '説明が見つかりませんでした。',
+            source: '日本語Wikipedia (MediaWiki API)'
+        });
     }
 
     return entries;
@@ -163,13 +163,49 @@ function isLikelyJapanese(text) {
 }
 
 async function fetchJapaneseDictionary(word, limit) {
-    const response = await fetch(JAPANESE_WIKTIONARY_API_URL + encodeURIComponent(word));
-    if (!response.ok) {
+    const searchParams = new URLSearchParams({
+        action: 'query',
+        format: 'json',
+        list: 'search',
+        srsearch: word,
+        srlimit: String(limit),
+        utf8: '1',
+        origin: '*'
+    });
+
+    const searchResponse = await fetch(`${JAPANESE_WIKIPEDIA_API_URL}?${searchParams.toString()}`);
+    if (!searchResponse.ok) {
         throw new Error('Japanese dictionary request failed');
     }
 
-    const data = await response.json();
-    return parseJapaneseWiktionaryEntries(data, limit);
+    const searchData = await searchResponse.json();
+    const searchItems = searchData && searchData.query && Array.isArray(searchData.query.search)
+        ? searchData.query.search
+        : [];
+
+    if (searchItems.length === 0) {
+        return [];
+    }
+
+    const titles = searchItems.slice(0, limit).map((item) => item.title).join('|');
+    const extractParams = new URLSearchParams({
+        action: 'query',
+        format: 'json',
+        prop: 'extracts',
+        explaintext: '1',
+        exintro: '1',
+        redirects: '1',
+        titles,
+        origin: '*'
+    });
+
+    const extractResponse = await fetch(`${JAPANESE_WIKIPEDIA_API_URL}?${extractParams.toString()}`);
+    if (!extractResponse.ok) {
+        throw new Error('Japanese dictionary extract request failed');
+    }
+
+    const extractData = await extractResponse.json();
+    return parseJapaneseWikipediaEntries(searchData, extractData, limit);
 }
 
 async function fetchEnglishDictionary(word, limit) {
