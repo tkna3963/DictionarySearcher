@@ -48,7 +48,7 @@ body[data-orientation='portrait'] .tablet-app {
 
 body[data-orientation='landscape'] .tablet-app {
     width: 100%;
-    grid-template-columns: minmax(320px, 38%) minmax(0, 62%);
+    grid-template-columns: minmax(0, 60%) minmax(0, 40%);
     grid-template-areas:
         'hero result'
         'search result';
@@ -141,7 +141,7 @@ body[data-orientation='landscape'] .result-card {
 }
 
 body[data-orientation='landscape'] #KanjiInput {
-    min-height: 46svh;
+    min-height: 58svh;
 }
 
 #KanjiInput:focus,
